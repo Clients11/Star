@@ -61,7 +61,7 @@ async def view_approved(client, callback_query):
     if approved_cards:
         approved_text = "\n\n".join(approved_cards)
         approved_cards = []  # Clear approved cards after displaying
-        await callback_query.message.reply(f"Approved Cards:\n{approved_text}")
+        await callback_query.message.reply(f"Approved Cards:\n {approved_text}")
     else:
         await callback_query.message.reply("No approved cards.")
     await update_buttons(callback_query)
