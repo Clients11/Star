@@ -5,6 +5,7 @@ import random
 import time
 from DAXXMUSIC import app
 
+
 approved_cards = []
 declined_cards = []
 invalid_format_cards = []
@@ -24,6 +25,8 @@ async def handle_document(client, message):
             card_details = file.readlines()
 
         total_cards = len(card_details)
+        progress_message = await message.reply("Starting card processing...")
+
         for i, line in enumerate(card_details):
             parts = line.strip().split('|')
             if len(parts) == 4:
@@ -41,6 +44,12 @@ async def handle_document(client, message):
                 else:
                     declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}")
                 await message.reply(f"Checking card {i+1}/{total_cards}\n{result}")
+
+                # Calculate and update progress
+                progress = int(((i + 1) / total_cards) * 100)
+                progress_bar = f"[{'█' * (progress // 5)}{' ' * (20 - (progress // 5))}] {progress}%"
+                await progress_message.edit_text(f"Processing... {progress_bar}")
+
                 await asyncio.sleep(random.uniform(2, 4))  # Simulate realistic processing time
             else:
                 invalid_format_cards.append(line.strip())
@@ -56,7 +65,7 @@ async def handle_document(client, message):
             ]
         )
 
-        await message.reply(
+        await progress_message.edit_text(
             f"Processing Complete!\nTotal Cards: {total_cards}\nApproved: {approved_count}\nDeclined: {declined_count}\nInvalid Format: {invalid_count}",
             reply_markup=keyboard
         )
