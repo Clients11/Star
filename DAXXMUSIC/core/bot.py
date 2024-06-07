@@ -25,6 +25,8 @@ class DAXX(Client):
         self.username = self.me.username
         self.mention = self.me.mention
 
+        LOGGER(self.name).info(f"LOGGER_ID: {config.LOGGER_ID}")  # Log the LOGGER_ID
+
         try:
             await self.send_message(
                 chat_id=config.LOGGER_ID,
@@ -40,11 +42,14 @@ class DAXX(Client):
                 f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
             )
 
-        a = await self.get_chat_member(config.LOGGER_ID, self.id)
-        if a.status != ChatMemberStatus.ADMINISTRATOR:
-            LOGGER(self.name).error(
-                "Please promote your bot as an admin in your log group/channel."
-            )
+        try:
+            a = await self.get_chat_member(config.LOGGER_ID, self.id)
+            if a.status != ChatMemberStatus.ADMINISTRATOR:
+                LOGGER(self.name).error(
+                    "Please promote your bot as an admin in your log group/channel."
+                )
+        except ValueError as ve:
+            LOGGER(self.name).error(f"Invalid LOGGER_ID: {config.LOGGER_ID}. Error: {ve}")
 
         LOGGER(self.name).info(f"Music Bot Started as {self.name}")
 
