@@ -7,10 +7,10 @@ from ..logging import LOGGER
 
 
 class DAXX(Client):
-    def init(self):
+    def __init__(self, name):
         LOGGER(name).info(f"Starting Bot...")
-        super().init(
-            name="DAXXMUSIC",
+        super().__init__(
+            name=DAXXMUSIC,
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             bot_token=config.BOT_TOKEN,
@@ -28,25 +28,26 @@ class DAXX(Client):
         try:
             await self.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"<u><b>» {self.mention} ʙᴏᴛ sᴛᴀʀᴛᴇᴅ :</b><u>\n\nɪᴅ : <code>{self.id}</code>\nɴᴀᴍᴇ : {self.name}\nᴜsᴇʀɴᴀᴍᴇ : @{self.username}",
+                text=f"<u><b>» {self.mention} ʙᴏᴛ sᴛᴀʀᴛᴇᴅ :</b></u>\n\nɪᴅ : <code>{self.id}</code>\nɴᴀᴍᴇ : {self.name}\nᴜsᴇʀɴᴀᴍᴇ : @{self.username}",
             )
         except (errors.ChannelInvalid, errors.PeerIdInvalid):
-            LOGGER(name).error(
+            LOGGER(self.name).error(
                 "Bot has failed to access the log group/channel. Make sure that you have added your bot to your log group/channel."
             )
 
         except Exception as ex:
-            LOGGER(name).error(
-                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).name}."
+            LOGGER(self.name).error(
+                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
             )
 
         a = await self.get_chat_member(config.LOGGER_ID, self.id)
         if a.status != ChatMemberStatus.ADMINISTRATOR:
-            LOGGER(name).error(
+            LOGGER(self.name).error(
                 "Please promote your bot as an admin in your log group/channel."
             )
 
-        LOGGER(name).info(f"Music Bot Started as {self.name}")
+        LOGGER(self.name).info(f"Music Bot Started as {self.name}")
 
     async def stop(self):
         await super().stop()
+        
