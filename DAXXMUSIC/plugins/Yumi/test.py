@@ -27,7 +27,7 @@ async def handle_document(client, message):
             if len(parts) == 4:
                 card_number, exp_month, exp_year, cvc = parts
                 is_approved = random.random() > 0.99  # 1% chance of approval
-                result = f"𝗖𝗮𝗿𝗱: {{{card_number}|{exp_month}|{exp_year}|{cvc}}}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}"
+                result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}"
                 if is_approved:
                     approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}")
                 else:
@@ -61,7 +61,7 @@ async def view_approved(client, callback_query):
     if approved_cards:
         approved_text = "\n\n".join(approved_cards)
         approved_cards = []  # Clear approved cards after displaying
-        await callback_query.message.reply(f"Approved Cards:\n {approved_text}")
+        await callback_query.message.reply(f"Approved Cards:\n{approved_text}")
     else:
         await callback_query.message.reply("No approved cards.")
     await update_buttons(callback_query)
@@ -104,3 +104,4 @@ async def update_buttons(callback_query):
     
     await callback_query.message.edit_reply_markup(reply_markup=keyboard)
     await callback_query.answer()
+    
