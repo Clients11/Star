@@ -19,6 +19,7 @@ async def handle_document(client, message):
 
     document = message.document
     if document.mime_type == 'text/plain':
+        start_time = time.time()
         await message.download(f"/tmp/{document.file_name}")
         
         with open(f"/tmp/{document.file_name}", 'r') as file:
@@ -31,15 +32,16 @@ async def handle_document(client, message):
             parts = line.strip().split('|')
             if len(parts) == 4:
                 card_number, exp_month, exp_year, cvc = parts
-                is_approved = random.random() > 0.99  # 1% chance of approval
+                is_approved = random.random() > 0.5  # 50% chance of approval
+                response_type = random.choice(["Approved\nPayment Completed", "Approved\nInsufficient Funds", "CVV LIVE", "Your card's security code is invalid."])
                 elapsed_time = round(time.time() - start_time, 2)
                 result = (
                     f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n"
                     f"𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n"
-                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}\n\n"
+                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {response_type}\n\n"
                     f"𝗧𝗶𝗺𝗲: {elapsed_time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬"
                 )
-                if is_approved:
+                if "Approved" in response_type:
                     approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}")
                 else:
                     declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}")
@@ -50,7 +52,7 @@ async def handle_document(client, message):
                 progress_bar = f"[{'█' * (progress // 5)}{' ' * (20 - (progress // 5))}] {progress}%"
                 await progress_message.edit_text(f"Processing... {progress_bar}")
 
-                await asyncio.sleep(random.uniform(2, 4))  # Simulate realistic processing time
+                await asyncio.sleep(random.uniform(0.1, 0.3))  # Simulate realistic processing time
             else:
                 invalid_format_cards.append(line.strip())
         
