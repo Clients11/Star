@@ -17,12 +17,12 @@ async def get_bin_info(bin_number):
             if response.status == 200:
                 data = await response.json()
                 return {
-                    "brand": data.get("scheme", "Unknown").upper(),
-                    "type": data.get("type", "Unknown").upper(),
-                    "level": data.get("brand", "Unknown").upper(),
-                    "issuer": data.get("bank", {}).get("name", "Unknown"),
-                    "country": data.get("country", {}).get("name", "Unknown"),
-                    "country_emoji": data.get("country", {}).get("emoji", "")
+                    "brand": data.get("scheme", "").upper() if data.get("scheme") else "Unknown",
+                    "type": data.get("type", "").upper() if data.get("type") else "Unknown",
+                    "level": data.get("brand", "").upper() if data.get("brand") else "Unknown",
+                    "issuer": data.get("bank", {}).get("name", "Unknown") if data.get("bank") else "Unknown",
+                    "country": data.get("country", {}).get("name", "Unknown") if data.get("country") else "Unknown",
+                    "country_emoji": data.get("country", {}).get("emoji", "") if data.get("country") else ""
                 }
             else:
                 return {
