@@ -2,7 +2,6 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
-import time
 from DAXXMUSIC import app
 
 
@@ -19,40 +18,35 @@ async def handle_document(client, message):
 
     document = message.document
     if document.mime_type == 'text/plain':
-        start_time = time.time()
         await message.download(f"/tmp/{document.file_name}")
         
         with open(f"/tmp/{document.file_name}", 'r') as file:
             card_details = file.readlines()
 
         total_cards = len(card_details)
-        progress_message = await message.reply("Starting card processing...")
 
         for i, line in enumerate(card_details):
             parts = line.strip().split('|')
             if len(parts) == 4:
                 card_number, exp_month, exp_year, cvc = parts
                 is_approved = random.random() > 0.5  # 50% chance of approval
-                response_type = random.choice(["Approved\nPayment Completed", "Approved\nInsufficient Funds", "CVV LIVE", "Your card's security code is invalid."])
-                elapsed_time = round(time.time() - start_time, 2)
+                response_type = random.choice([
+                    "Approved\nPayment Completed", 
+                    "Approved\nInsufficient Funds", 
+                    "CVV LIVE", 
+                    "Your card's security code is invalid."
+                ])
                 result = (
                     f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n"
                     f"𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n"
-                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {response_type}\n\n"
-                    f"𝗧𝗶𝗺𝗲: {elapsed_time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬"
+                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {response_type}"
                 )
                 if "Approved" in response_type:
                     approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}")
                 else:
                     declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}")
                 await message.reply(f"Checking card {i+1}/{total_cards}\n{result}")
-
-                # Calculate and update progress
-                progress = int(((i + 1) / total_cards) * 100)
-                progress_bar = f"[{'█' * (progress // 5)}{' ' * (20 - (progress // 5))}] {progress}%"
-                await progress_message.edit_text(f"Processing... {progress_bar}")
-
-                await asyncio.sleep(random.uniform(0.1, 0.3))  # Simulate realistic processing time
+                await asyncio.sleep(random.uniform(2, 4))  # Simulate realistic processing time
             else:
                 invalid_format_cards.append(line.strip())
         
@@ -67,7 +61,7 @@ async def handle_document(client, message):
             ]
         )
 
-        await progress_message.edit_text(
+        await message.reply(
             f"Processing Complete!\nTotal Cards: {total_cards}\nApproved: {approved_count}\nDeclined: {declined_count}\nInvalid Format: {invalid_count}",
             reply_markup=keyboard
         )
