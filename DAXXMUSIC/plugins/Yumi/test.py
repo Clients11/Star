@@ -42,14 +42,14 @@ async def handle_document(client, message):
 
         keyboard = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton(f"View Approved Cards ({approved_count})", callback_data="view_approved")],
-                [InlineKeyboardButton(f"View Declined Cards ({declined_count})", callback_data="view_declined")],
-                [InlineKeyboardButton(f"View Invalid Format Cards ({invalid_count})", callback_data="view_invalid")],
+                [InlineKeyboardButton(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅ ({approved_count})", callback_data="view_approved")],
+                [InlineKeyboardButton(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌ ({declined_count})", callback_data="view_declined")],
+                [InlineKeyboardButton(f"𝐈𝐧𝐯𝐚𝐥𝐢𝐝👽 ({invalid_count})", callback_data="view_invalid")],
             ]
         )
 
         await message.reply(
-            f"Processing Complete!\nTotal Cards: {total_cards}\nApproved: {approved_count}\nDeclined: {declined_count}\nInvalid Format: {invalid_count}",
+            f"𝘎𝘈𝘛𝘌𝘞𝘈𝘠: 𝘚𝘏𝘖𝘗𝘐𝘍𝘠 + 𝘈𝘜𝘛𝘏𝘖𝘙𝘐𝘡𝘌  $5!\n ᴛᴏᴛᴀʟ ᴄᴀʀᴅs: {total_cards}\n 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅: {approved_count}\n𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌: {declined_count}\nInvalid Format: {invalid_count}",
             reply_markup=keyboard
         )
     else:
@@ -61,7 +61,7 @@ async def view_approved(client, callback_query):
     if approved_cards:
         approved_text = "\n\n".join(approved_cards)
         approved_cards = []  # Clear approved cards after displaying
-        await callback_query.message.reply(f"Approved Cards:\n{approved_text}")
+        await callback_query.message.reply(f"𝖦𝖠𝖳𝖤𝖶𝖠𝖸: 𝖲𝖧𝖮𝖯𝖨𝖥𝖸 + 𝖠𝖴𝖳𝖧𝖮𝖱𝖨𝖹𝖤 $5:\n\n{approved_text}")
     else:
         await callback_query.message.reply("No approved cards.")
     await update_buttons(callback_query)
@@ -96,9 +96,9 @@ async def update_buttons(callback_query):
     
     keyboard = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(f"View Approved Cards ({approved_count})", callback_data="view_approved")],
-            [InlineKeyboardButton(f"View Declined Cards ({declined_count})", callback_data="view_declined")],
-            [InlineKeyboardButton(f"View Invalid Format Cards ({invalid_count})", callback_data="view_invalid")],
+            [InlineKeyboardButton(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅ ({approved_count})", callback_data="view_approved")],
+            [InlineKeyboardButton(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌ ({declined_count})", callback_data="view_declined")],
+            [InlineKeyboardButton(f"𝐈𝐧𝐯𝐚𝐥𝐢𝐝👽 ({invalid_count})", callback_data="view_invalid")],
         ]
     )
     
