@@ -18,7 +18,6 @@ async def handle_document(client, message):
 
     document = message.document
     if document.mime_type == 'text/plain':
-        start_time = time.time()
         await message.download(f"/tmp/{document.file_name}")
         
         with open(f"/tmp/{document.file_name}", 'r') as file:
@@ -34,14 +33,15 @@ async def handle_document(client, message):
                 result = (
                     f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n"
                     f"𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n"
-                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}"
+                    f"𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}\n\n"
+                    f"𝗧𝗶𝗺𝗲: {elapsed_time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬"
                 )
                 if is_approved:
-                    approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}\n\n𝗧𝗶𝗺𝗲: {elapsed_time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬")
+                    approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}")
                 else:
-                    declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}\n\n𝗧𝗶𝗺𝗲: {elapsed_time} 𝐬𝐞𝐜𝐨𝐧𝐝𝐬")
+                    declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}")
                 await message.reply(f"Checking card {i+1}/{total_cards}\n{result}")
-                await asyncio.sleep(random.uniform(1.5, 2.5))  # Simulate realistic processing time
+                await asyncio.sleep(random.uniform(2, 4))  # Simulate realistic processing time
             else:
                 invalid_format_cards.append(line.strip())
         
