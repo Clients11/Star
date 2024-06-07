@@ -12,10 +12,10 @@ git()
 dbb()
 heroku()
 
-app = DAXX()
+# Initialize DAXX with the required name argument
+app = DAXX(name="DAXXMUSIC")
 api = SafoneAPI()
 userbot = Userbot()
-
 
 from .platforms import *
 
