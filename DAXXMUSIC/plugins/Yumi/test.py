@@ -2,7 +2,7 @@ import asyncio
 from pyrogram import Client, filters, enums
 import re
 from pathlib import Path
-from DAXXMUSIC import app, user
+from DAXXMUSIC import app, userbot as user
 
 def getcards(text:str):
     import re
