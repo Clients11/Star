@@ -2,7 +2,7 @@ import asyncio
 from pyrogram import Client, filters, enums
 import re
 from pathlib import Path
-from DAXXMUSIC import app, userbot as user
+from DAXXMUSIC import app
 
 def getcards(text:str):
     import re
@@ -76,12 +76,12 @@ async def cmd_scr(client, message):
         channel_link = splitter[0]
         if "https" in channel_link:
             try:
-                join = await user.join_chat(channel_link)
+                join = await app.join_chat(channel_link)
                 title = join.title
                 channel_id = join.id
                 amt_cc = 0
                 dublicate = 0
-                async for msg in user.get_chat_history(channel_id, limit):
+                async for msg in app.get_chat_history(channel_id, limit):
                     all_history = str(msg.text)
                     if all_history == 'None':
                         all_history = "INVALID CC NUMBER BC"
@@ -142,13 +142,13 @@ async def cmd_scr(client, message):
                 fr_error = 'Telegram says: [400 USER_ALREADY_PARTICIPANT] - The user is already a participant of this chat (caused by "messages.ImportChatInvite")'
                 sec_error = 'Telegram says: [400 INVITE_HASH_EXPIRED] - The chat invite link is no longer valid (caused by "messages.ImportChatInvite")'
                 if e == fr_error:
-                    chat_info = await user.get_chat(channel_link)
+                    chat_info = await app.get_chat(channel_link)
                     channel_id = chat_info.id
                     title = chat_info.title
                     try:
                         amt_cc = 0
                         dublicate = 0
-                        async for msg in user.get_chat_history(channel_id, limit):
+                        async for msg in app.get_chat_history(channel_id, limit):
                             all_history = str(msg.text)
                             if all_history == 'None':
                                 all_history = "INVALID CC NUMBER BC"
