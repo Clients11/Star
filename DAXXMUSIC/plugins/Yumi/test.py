@@ -38,6 +38,7 @@ def getcards(text: str):
 async def cmd_scr(client, message):
     msg = message.text[len('/scr '):].strip()
     splitter = msg.split(' ')
+    user = userbot.one
     
     if not msg or len(splitter) < 2:
         resp = """
@@ -64,7 +65,7 @@ async def cmd_scr(client, message):
     async def scrape_channel(channel_id, limit, title):
         amt_cc = 0
         dublicate = 0
-        for msg in await user.get_chat_history(channel_id, limit):
+        async for msg in user.get_chat_history(channel_id, limit):
             all_history = msg.text or "INVALID CC NUMBER BC"
             all_cards = all_history.split('\n')
             cards = [getcards(x) for x in all_cards if getcards(x)]
@@ -79,7 +80,7 @@ async def cmd_scr(client, message):
                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
                 
                 with open(file_name, 'a') as f:
-                    cclist = f.read().splitlines()
+                    cclist = open(file_name).read().splitlines()
                     if fullcc in cclist:
                         dublicate += 1
                     else:
@@ -98,7 +99,8 @@ async def cmd_scr(client, message):
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
         document = file_name
-        scr_done = await message.reply_document(
+        scr_done = await app.send_document(
+            message.chat.id,
             document=document,
             caption=caption,
             reply_to_message_id=message.id
@@ -107,8 +109,8 @@ async def cmd_scr(client, message):
         if scr_done:
             Path(file_name).unlink(missing_ok=True)
 
+
     try:
-        user = userbot.one
         if "https" in channel_link:
             join = await user.join_chat(channel_link)
             await scrape_channel(join.id, limit, join.title)
@@ -120,5 +122,9 @@ async def cmd_scr(client, message):
         if '[400 USER_ALREADY_PARTICIPANT]' in error_message:
             chat_info = await user.get_chat(channel_link)
             await scrape_channel(chat_info.id, limit, chat_info.title)
+        elif '[400 USERNAME_INVALID]' in error_message:
+            await message.reply_text("Invalid username or link provided. Please check and try again.", message.id)
+        elif '[400 INVITE_HASH_EXPIRED]' in error_message:
+            await message.reply_text("The invite link is expired. Please provide a valid link.", message.id)
         else:
             await message.reply_text(f"An error occurred: {error_message}", message.id)
