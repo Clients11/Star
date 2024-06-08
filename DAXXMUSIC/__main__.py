@@ -5,7 +5,7 @@ from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from DAXXMUSIC import LOGGER, app, userbot
+from DAXXMUSIC import LOGGER, app, userbot, user
 from DAXXMUSIC.core.call import DAXX
 from DAXXMUSIC.misc import sudo
 from DAXXMUSIC.plugins import ALL_MODULES
@@ -39,6 +39,7 @@ async def init():
     LOGGER("DAXXMUSIC.plugins").info("𝐀𝐥𝐥 𝐅𝐞𝐚𝐭𝐮𝐫𝐞𝐬 𝐋𝐨𝐚𝐝𝐞𝐝 𝐁𝐚𝐛𝐲🥳...")
     await userbot.start()
     await DAXX.start()
+    await user.start()
     try:
         await DAXX.stream_call("https://te.legra.ph/file/29f784eb49d230ab62e9e.mp4")
     except NoActiveGroupCall:
