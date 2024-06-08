@@ -2,11 +2,6 @@ from pyrogram import Client, filters
 from pathlib import Path
 from DAXXMUSIC import app as bot
 
-# Define your user client (ensure you replace 'user_session' with your actual session name or string session)
-user = Client("user_session")
-
-# Define your bot client (ensure you replace 'bot_session' with your actual bot token)
-#bot = Client("bot_session", bot_token="YOUR_BOT_TOKEN")
 
 @bot.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
@@ -172,7 +167,3 @@ async def cmd_scr(client, message):
                     await message.reply_text(f"An error occurred: {e}", message.id)
         else:
             await message.reply_text("Invalid channel link format. Please provide a valid link.", message.id)
-
-user.start()
-bot.start()
-bot.run()
