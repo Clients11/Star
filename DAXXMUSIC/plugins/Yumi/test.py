@@ -2,7 +2,9 @@ import asyncio
 from pyrogram import Client, filters, enums
 import re
 from pathlib import Path
-from DAXXMUSIC import app, userbot as user
+from DAXXMUSIC import app
+from DAXXMUSIC.core.userbot import assistants
+
 
 def getcards(text: str):
     text = text.replace('\n', ' ').replace('\r', '')
@@ -106,6 +108,8 @@ async def cmd_scr(client, message):
             Path(file_name).unlink(missing_ok=True)
 
     try:
+        if 1 in assistants:
+            user = us.one
         if "https" in channel_link:
             join = await user.join_chat(channel_link)
             await scrape_channel(join.id, limit, join.title)
