@@ -1,9 +1,12 @@
-from pyrogram import Client, filters
+import asyncio
+from pyrogram import Client, filters, enums
+import re
 from pathlib import Path
-from DAXXMUSIC import app as bot
-from DAXXMUSIC import userbot as user
+from defs import getcards
+from DAXXMUSIC import app, user
 
-@bot.on_message(filters.command('scr'))
+
+@app.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
     msg = message.text[len('/scr '):]
     splitter = msg.split(' ')
@@ -63,7 +66,7 @@ async def cmd_scr(client, message):
                         cvv = item[3]
                         fullcc = f"{cc}|{mes}|{ano}|{cvv}"
 
-                        file_name = f"{limit}x_CC_Scraped_By_@AnzooBot.txt"
+                        file_name = f"{limit}x_CC_Scraped_By_@Anzooapp.txt"
                         with open(file_name, 'a') as f:
                             cclist = open(f"{file_name}").read().splitlines()
                             if fullcc in cclist:
@@ -73,7 +76,7 @@ async def cmd_scr(client, message):
 
                 total_cc = amt_cc
                 cc_found = total_cc - dublicate
-                await bot.delete_messages(message.chat.id, delete.id)
+                await app.delete_messages(message.chat.id, delete.id)
                 caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
@@ -130,7 +133,7 @@ async def cmd_scr(client, message):
                                 cvv = item[3]
                                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
 
-                                file_name = f"{limit}x_CC_Scraped_By_@AnzooBot.txt"
+                                file_name = f"{limit}x_CC_Scraped_By_@Anzooapp.txt"
                                 with open(file_name, 'a') as f:
                                     cclist = open(f"{file_name}").read().splitlines()
                                     if fullcc in cclist:
@@ -140,7 +143,7 @@ async def cmd_scr(client, message):
 
                         total_cc = amt_cc
                         cc_found = total_cc - dublicate
-                        await bot.delete_messages(message.chat.id, delete.id)
+                        await app.delete_messages(message.chat.id, delete.id)
                         caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
