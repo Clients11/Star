@@ -170,3 +170,4 @@ async def cmd_scr(client, message):
                     await message.reply_text(f"An error occurred: {e}", message.id)
         else:
             await message.reply_text("Invalid channel link format. Please provide a valid link.", message.id)
+            user.start()
