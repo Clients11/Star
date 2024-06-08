@@ -1,9 +1,7 @@
 from pyrogram import Client, filters
-from pyrogram import Client, filters
 from DAXXMUSIC import app
 
-
-@app.on_message(filters.command('scr'))
+@bot.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
     msg = message.text[len('/scr '):]
     splitter = msg.split(' ')
@@ -63,7 +61,7 @@ async def cmd_scr(client, message):
                         cvv = item[3]
                         fullcc = f"{cc}|{mes}|{ano}|{cvv}"
 
-                        file_name = f"{limit}x_CC_Scraped_By_@𝙂𝘽𝙋.txt"
+                        file_name = f"{limit}x_CC_Scraped_By_@AnzooBot.txt"
                         with open(file_name, 'a') as f:
                             cclist = open(f"{file_name}").read().splitlines()
                             if fullcc in cclist:
@@ -73,7 +71,7 @@ async def cmd_scr(client, message):
 
                 total_cc = amt_cc
                 cc_found = total_cc - dublicate
-                await app.delete_messages(message.chat.id, delete.id)
+                await bot.delete_messages(message.chat.id, delete.id)
                 caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
@@ -130,7 +128,7 @@ async def cmd_scr(client, message):
                                 cvv = item[3]
                                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
 
-                                file_name = f"{limit}x_CC_Scraped_By_@𝙂𝘽𝙋.txt"
+                                file_name = f"{limit}x_CC_Scraped_By_@AnzooBot.txt"
                                 with open(file_name, 'a') as f:
                                     cclist = open(f"{file_name}").read().splitlines()
                                     if fullcc in cclist:
@@ -140,7 +138,7 @@ async def cmd_scr(client, message):
 
                         total_cc = amt_cc
                         cc_found = total_cc - dublicate
-                        await app.delete_messages(message.chat.id, delete.id)
+                        await bot.delete_messages(message.chat.id, delete.id)
                         caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
@@ -150,3 +148,4 @@ async def cmd_scr(client, message):
 ● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {dublicate}
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
+                        
