@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pathlib import Path
 from DAXXMUSIC import app as bot
-from DAXXMUSIC import app as user
+from DAXXMUSIC import userbot as user
 
 @bot.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
