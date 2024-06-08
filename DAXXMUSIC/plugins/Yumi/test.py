@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
-from DAXXMUSIC import app
+from pathlib import Path
+from DAXXMUSIC import app as bot
 
 @bot.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
@@ -148,4 +149,20 @@ async def cmd_scr(client, message):
 ● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {dublicate}
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
-                        
+                        document = file_name
+                        scr_done = await message.reply_document(
+                            document=document,
+                            caption=caption,
+                            reply_to_message_id=message.id)
+
+                        if scr_done:
+                            name = document
+                            my_file = Path(name)
+                            my_file.unlink(missing_ok=True)
+
+                    except Exception as e:
+                        await message.reply_text(f"An error occurred: {e}", message.id)
+                else:
+                    await message.reply_text(f"An error occurred: {e}", message.id)
+        else:
+            await message.reply_text("Invalid channel link format. Please provide a valid link.", message.id)
