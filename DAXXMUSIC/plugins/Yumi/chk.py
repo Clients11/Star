@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 import requests
 import re
-import timE
+import time
 from DAXXMUSIC import app
 
 
