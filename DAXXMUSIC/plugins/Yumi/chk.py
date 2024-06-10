@@ -2,7 +2,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
-from DAXXMUSIC import app
+from EQUROBOT import app
 
 approved_cards = []
 declined_cards = []
@@ -30,7 +30,11 @@ async def handle_document(client, message):
             parts = line.strip().split('|')
             if len(parts) == 4:
                 card_number, exp_month, exp_year, cvc = parts
-                response = random.choice(['Card Issuer Declined CVV', 'Insufficient Funds', 'Payment method successfully added.', 'street address.', 'Gateway Rejected: avs', 'Status code avs: Gateway Rejected: avs', 'payment method added:', 'Duplicate card exists in the vault.', 'woocommerce-message'])
+                # 1% chance of approval
+                if random.random() < 0.01:
+                    response = 'Payment method successfully added.'
+                else:
+                    response = random.choice(['Card Issuer Declined CVV', 'Insufficient Funds', 'street address.', 'Gateway Rejected: avs', 'Status code avs: Gateway Rejected: avs', 'payment method added:', 'Duplicate card exists in the vault.', 'woocommerce-message'])
 
                 if 'Card Issuer Declined CVV' in response:
                     result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Declined CVV ❎"
