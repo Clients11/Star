@@ -2,7 +2,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
-from EQUROBOT import app
+from DAXXMUSIC import app
 
 approved_cards = []
 declined_cards = []
