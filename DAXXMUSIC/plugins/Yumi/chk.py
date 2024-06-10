@@ -40,7 +40,7 @@ def binn(bin, c, re):
 ━━━━━━━━━━━━━━
 𝘽𝙤𝙩 𝘽𝙮 - @"""
 
-@app.on_message(filters.command("start"))
+@app.on_message(filters.command("st"))
 async def start(client, message):
     await message.reply("Welcome to B3 HQ Checker!\nDrop your CCs Combo file below 👇🏻\n🚀 Maximum CCs: 50 for now!\n\n- 𝘽𝙤𝙩 𝘽𝙮 - @nophq")
 
