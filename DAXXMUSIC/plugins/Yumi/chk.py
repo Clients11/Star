@@ -38,11 +38,7 @@ def binn(bin, c, re):
 ↺ 𝘽𝙖𝙣𝙠 -» <code>{bank}</code>
 ↺ 𝘾𝙤𝙪𝙣𝙩𝙧𝙮 -» <code>{country_name} {country_flag} {country_currencies}</code>
 ━━━━━━━━━━━━━━
-𝘽𝙤𝙩 𝘽𝙮 - @"""
-
-@app.on_message(filters.command("st"))
-async def start(client, message):
-    await message.reply("Welcome to B3 HQ Checker!\nDrop your CCs Combo file below 👇🏻\n🚀 Maximum CCs: 50 for now!\n\n- 𝘽𝙤𝙩 𝘽𝙮 - @nophq")
+𝘽𝙤𝙩 𝘽𝙮 - @nophq"""
 
 @app.on_message(filters.document)
 async def handle_document(client, message):
