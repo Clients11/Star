@@ -8,13 +8,9 @@ approved_cards = []
 declined_cards = []
 invalid_format_cards = []
 
-ccn = 0
-cvv = 0
-app_count = 0
-
 @app.on_message(filters.document)
 async def handle_document(client, message):
-    global approved_cards, declined_cards, invalid_format_cards, ccn, cvv, app_count
+    global approved_cards, declined_cards, invalid_format_cards
     approved_cards = []
     declined_cards = []
     invalid_format_cards = []
@@ -30,8 +26,8 @@ async def handle_document(client, message):
             parts = line.strip().split('|')
             if len(parts) == 4:
                 card_number, exp_month, exp_year, cvc = parts
-                # 1% chance of approval
-                if random.random() < 0.01:
+                is_approved = random.random() < 0.01  # 1% chance of approval
+                if is_approved:
                     response = 'Payment method successfully added.'
                 else:
                     response = random.choice(['Card Issuer Declined CVV', 'Insufficient Funds', 'street address.', 'Gateway Rejected: avs', 'Status code avs: Gateway Rejected: avs', 'payment method added:', 'Duplicate card exists in the vault.', 'woocommerce-message'])
@@ -39,15 +35,12 @@ async def handle_document(client, message):
                 if 'Card Issuer Declined CVV' in response:
                     result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Declined CVV ❎"
                     declined_cards.append(f"Declined CVV ❎\n{result}")
-                    ccn += 1
                 elif 'Insufficient Funds' in response:
                     result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Insufficient Funds. ✅"
-                    approved_cards.append(f"Insufficient Funds. ✅\n{result}")
-                    cvv += 1
+                    declined_cards.append(f"Insufficient Funds. ✅\n{result}")
                 elif any(keyword in response for keyword in ['Payment method successfully added.', 'street address.', 'Gateway Rejected: avs', 'Status code avs: Gateway Rejected: avs', 'payment method added:', 'Duplicate card exists in the vault.', 'woocommerce-message']):
                     result = f"𝗖𝗮𝗿𝗱: {card_number}|{exp_month}|{exp_year}|{cvc}\n𝐆𝐚𝐭𝐞𝐰𝐚𝐲: Braintree Auth\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Approved ✅"
                     approved_cards.append(f"Approved ✅\n{result}")
-                    app_count += 1
             else:
                 invalid_format_cards.append(line.strip())
         
