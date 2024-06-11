@@ -64,7 +64,7 @@ async def cmd_scr(client, message):
     
     async def scrape_channel(channel_id, limit, title):
         amt_cc = 0
-        dublicate = 0
+        duplicate = 0
         async for msg in user.get_chat_history(channel_id, limit):
             all_history = msg.text or "INVALID CC NUMBER BC"
             all_cards = all_history.split('\n')
@@ -82,12 +82,12 @@ async def cmd_scr(client, message):
                 with open(file_name, 'a') as f:
                     cclist = open(file_name).read().splitlines()
                     if fullcc in cclist:
-                        dublicate += 1
+                        duplicate += 1
                     else:
                         f.write(f"{fullcc}\n")
 
         total_cc = amt_cc
-        cc_found = total_cc - dublicate
+        cc_found = total_cc - duplicate
         await app.delete_messages(message.chat.id, delete.id)
         caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
@@ -95,7 +95,7 @@ async def cmd_scr(client, message):
 ● 𝗦𝗼𝘂𝗿𝗰𝗲: {title}
 ● 𝗧𝗮𝗿𝗴𝗲𝘁𝗲𝗱 𝗔𝗺𝗼𝘂𝗻𝘁: {limit}
 ● 𝗖𝗖 𝗙𝗼𝘂𝗻𝗱: {cc_found}
-● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {dublicate}
+● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {duplicate}
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
         document = file_name
