@@ -1,5 +1,5 @@
 import asyncio
-from pyrogram import Client, filters, enums
+from pyrogram import Client, filters
 import re
 from pathlib import Path
 from DAXXMUSIC import app, userbot
@@ -10,7 +10,7 @@ def getcards(text: str):
     text = text.replace('\n', ' ').replace('\r', '')
     card = re.findall(r"[0-9]+", text)
     if not card or len(card) < 3:
-        return
+        return None
 
     if len(card) == 3:
         cc, mes_ano, cvv = card
@@ -24,13 +24,13 @@ def getcards(text: str):
             mes, ano = ano, mes
 
     if not (cc.startswith(('3', '4', '5', '6')) and (len(cc) in [15, 16])):
-        return
+        return None
     if len(mes) != 2 or not ('01' <= mes <= '12'):
-        return
+        return None
     if len(ano) not in [2, 4] or (len(ano) == 2 and not ('21' <= ano <= '39')) or (len(ano) == 4 and not ('2021' <= ano <= '2039')):
-        return
+        return None
     if cc.startswith('3') and len(cvv) != 4 or len(cvv) != 3:
-        return
+        return None
     
     return cc, mes, ano, cvv
 
@@ -73,7 +73,7 @@ async def cmd_scr(client, message):
             if not cards:
                 continue
             
-            file_name = f"{limit}x_CC_Scraped_By_@Anzooapp.txt"
+            file_name = f"{limit}x_CC_Scraped_By_@YesikooBot.txt"
             for item in cards:
                 amt_cc += 1
                 cc, mes, ano, cvv = item
@@ -123,8 +123,21 @@ async def cmd_scr(client, message):
             chat_info = await user.get_chat(channel_link)
             await scrape_channel(chat_info.id, limit, chat_info.title)
         elif '[400 USERNAME_INVALID]' in error_message:
-            await message.reply_text("Invalid username or link provided. Please check and try again.", message.id)
+            resp = """
+𝗪𝗿𝗼𝗻𝗴 𝗙𝗼𝗿𝗺𝗮𝘁 ❌
+
+𝗨𝘀𝗮𝗴𝗲:
+𝗙𝗼𝗿 𝗣𝘂𝗯𝗹𝗶𝗰 𝗚𝗿𝗼𝘂𝗽 𝗦𝗰𝗿𝗮𝗽𝗽𝗶𝗻𝗴
+<code>/scr username 50</code>
+
+𝗙𝗼𝗿 𝗣𝗿𝗶𝘃𝗮𝘁𝗲 𝗚𝗿𝗼𝘂𝗽 𝗦𝗰𝗿𝗮𝗽𝗽𝗶𝗻𝗴
+<code>/scr https://t.me/+aGWRGz 50</code>
+        """
+            await message.reply_text(resp, message.id)
+            await delete.delete()
         elif '[400 INVITE_HASH_EXPIRED]' in error_message:
             await message.reply_text("The invite link is expired. Please provide a valid link.", message.id)
+            await delete.delete()
         else:
             await message.reply_text(f"An error occurred: {error_message}", message.id)
+            await delete.delete()
