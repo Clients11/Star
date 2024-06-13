@@ -89,7 +89,7 @@ async def cmd_scr(client, message):
                     duplicate += 1
                 else:
                     await add_card(cc)
-                    card_messages.append(f"⊗ 𝐂𝐚𝐫𝐝 : {fullcc}")
+                    card_messages.append(f"{fullcc}")
 
         total_cc = amt_cc
         cc_found = total_cc - duplicate
