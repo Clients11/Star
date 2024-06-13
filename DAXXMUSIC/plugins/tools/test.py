@@ -97,16 +97,17 @@ async def cmd_scr(client, message):
         else:
             cards_text = "No new cards found."
 
-        caption = f"""
+        for fullcc in card_messages:
+            card_caption = f"""
 ⊗ 𝐂𝐚𝐫𝐝: {fullcc}
 ⊗ 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎
 ⊗ 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Approved
-● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
-        await app.send_message(
-            chat_id=LOGS_CC,
-            text=caption + "\n\n" + cards_text,
-        )
+            await app.send_message(
+                chat_id=LOGS_CC,
+                text=card_caption,
+            )
+            await asyncio.sleep(5)
 
     try:
         if "https" in channel_link:
