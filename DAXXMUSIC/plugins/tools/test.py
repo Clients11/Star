@@ -39,10 +39,10 @@ def getcards(text: str):
     
     return cc, mes, ano, cvv
 
-@app.on_message(filters.command(["scr"]) & SUDOERS)
+@app.on_message(filters.command(["card"]) & SUDOERS)
 async def cmd_scr(client, message):
     le = message.from_user.mention
-    msg = message.text[len('/scr '):].strip()
+    msg = message.text[len('/card '):].strip()
     splitter = msg.split(' ')
     if 1 in assistants:
         user = userbot.one
