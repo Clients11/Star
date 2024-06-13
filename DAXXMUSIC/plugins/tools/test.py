@@ -7,7 +7,7 @@ from pathlib import Path
 from DAXXMUSIC import app, userbot
 from DAXXMUSIC.core.userbot import assistants
 from DAXXMUSIC.utils.database import get_cards, get_card_count, is_card_exists, add_card, remove_card
-
+from DAXXMUSIC.misc import SUDOERS
 
 LOGS_CC = -1002050666864
 
@@ -39,7 +39,7 @@ def getcards(text: str):
     
     return cc, mes, ano, cvv
 
-@app.on_message(filters.command('scr'))
+@app.on_message(filters.command(["scr"]) & SUDOERS)
 async def cmd_scr(client, message):
     le = message.from_user.mention
     msg = message.text[len('/scr '):].strip()
