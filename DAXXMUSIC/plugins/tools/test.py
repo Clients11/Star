@@ -116,7 +116,7 @@ async def cmd_scr(client, message):
                 chat_id=LOGS_CC,
                 text=card_caption,
             )
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
 
     try:
         if "https" in channel_link:
