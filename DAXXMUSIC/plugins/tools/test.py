@@ -101,7 +101,7 @@ async def cmd_scr(client, message):
             cards_text = "No new cards found."
 
         for fullcc in card_messages:
-            card_caption = f"""#APPROVED
+            card_caption = f"""
 ┏━━━━━━━⍟
 ┃BRAINTREE AUTH 𝟓$ ✅
 ┗━━━━━━━━━━━⊛
