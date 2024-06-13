@@ -9,7 +9,7 @@ from DAXXMUSIC.core.userbot import assistants
 from DAXXMUSIC.utils.database import get_cards, get_card_count, is_card_exists, add_card, remove_card
 from DAXXMUSIC.misc import SUDOERS
 
-LOGS_CC = -1002050666864
+LOGS_CC = -1002222638488
 
 def getcards(text: str):
     text = text.replace('\n', ' ').replace('\r', '')
