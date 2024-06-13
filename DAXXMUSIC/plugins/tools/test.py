@@ -98,12 +98,9 @@ async def cmd_scr(client, message):
             cards_text = "No new cards found."
 
         caption = f"""
-𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
-
-● 𝗦𝗼𝘂𝗿𝗰𝗲: {title}
-● 𝗧𝗮𝗿𝗴𝗲𝘁𝗲𝗱 𝗔𝗺𝗼𝘂𝗻𝘁: {limit}
-● 𝗖𝗖 𝗙𝗼𝘂𝗻𝗱: {cc_found}
-● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {duplicate}
+⊗ 𝐂𝐚𝐫𝐝: {fullcc}
+⊗ 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎
+⊗ 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Approved
 ● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
         await app.send_message(
