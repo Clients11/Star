@@ -81,11 +81,11 @@ async def cmd_scr(client, message):
                 amt_cc += 1
                 cc, mes, ano, cvv = item
                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
-                is_exist = await is_card_exists(fullcc)
+                is_exist = await is_card_exists(cc)
                 if is_exist:
                     duplicate += 1
                 else:
-                    await add_card(fullcc)
+                    await add_card(cc)
                     card_messages.append(f"⊗ 𝐂𝐚𝐫𝐝 : {fullcc}")
 
         total_cc = amt_cc
