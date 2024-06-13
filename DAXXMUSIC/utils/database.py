@@ -664,18 +664,18 @@ async def get_card_count() -> int:
     cards = await cards.to_list(length=100000)
     return len(cards)
 
-async def is_card_exists(fullcc: str) -> bool:
-    card = await cardsdb.find_one({"cc": fullcc})
+async def is_card_exists(cc: str) -> bool:
+    card = await cardsdb.find_one({"cc": cc})
     return bool(card)
 
-async def add_card(fullcc: str):
-    is_exist = await is_card_exists(fullcc)
+async def add_card(cc: str):
+    is_exist = await is_card_exists(cc)
     if is_exist:
         return
-    return await cardsdb.insert_one({"cc": fullcc})
+    return await cardsdb.insert_one({"cc": cc})
 
-async def remove_card(fullcc: str):
-    is_exist = await is_card_exists(fullcc)
+async def remove_card(cc: str):
+    is_exist = await is_card_exists(cc)
     if not is_exist:
         return
-    return await cardsdb.delete_one({"cc": fullcc})
+    return await cardsdb.delete_one({"cc": cc})
