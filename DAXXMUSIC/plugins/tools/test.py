@@ -1,5 +1,7 @@
 import asyncio
 from pyrogram import Client, filters
+from pyrogram.errors import FloodWait
+from pyrogram.types import Message
 import re
 from pathlib import Path
 from DAXXMUSIC import app, userbot
