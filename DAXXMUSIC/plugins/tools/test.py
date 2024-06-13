@@ -63,7 +63,7 @@ async def cmd_scr(client, message):
     except ValueError:
         limit = 100
 
-    delete = await message.reply_text("𝗦𝗰𝗿𝗮𝗽𝗶𝗻𝗴 𝗪𝗮𝗶𝘁...", message.id)
+    delete = await message.reply_text("𝗦𝗰𝗿𝗮𝗽𝗶𝗻𝗴 𝗦𝘁𝗮𝗿𝘁...", message.id)
     channel_link = splitter[0]
     
     async def scrape_channel(channel_id, limit, title):
