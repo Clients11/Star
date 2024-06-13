@@ -39,6 +39,7 @@ def getcards(text: str):
 
 @app.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
+    le = message.from_user.mention
     msg = message.text[len('/scr '):].strip()
     splitter = msg.split(' ')
     if 1 in assistants:
@@ -98,12 +99,16 @@ async def cmd_scr(client, message):
             cards_text = "No new cards found."
 
         for fullcc in card_messages:
-            card_caption = f"""
-⊗ 𝐂𝐚𝐫𝐝: <code>{fullcc}</code>
-⊗ 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐩𝐩𝐫𝐨𝐯𝐞𝐝 ❎
-⊗ 𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞: Approved
+            card_caption = f"""#APPROVED
+┏━━━━━━━⍟
+┃BRAINTREE AUTH 𝟓$ ✅
+┗━━━━━━━━━━━⊛
+➩ 𝗖𝗮𝗿𝗱 :<code>{fullcc}</code>
+➩ 𝗥𝗲𝘀𝗽𝗼𝗻𝘀𝗲 : APPROVED CARD ✅
+➩ 𝗠𝗲𝘀𝘀𝗮𝗴𝗲 : CHARGED 5$
 
-ᴘᴏᴡᴇʀ ʙʏ : @GitwizardBypaSS
+[↯] 𝗣𝗿𝗼𝘅𝘆 ↳ Live ✅
+➩ 𝗖𝗵𝗲𝗰𝗸𝗲𝗱 𝗕𝘆 : {le}
 """
             await app.send_message(
                 chat_id=LOGS_CC,
