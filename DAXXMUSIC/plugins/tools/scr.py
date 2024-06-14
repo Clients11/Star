@@ -1,15 +1,10 @@
 import asyncio
 from pyrogram import Client, filters
-from pyrogram.errors import FloodWait
-from pyrogram.types import Message
 import re
 from pathlib import Path
 from DAXXMUSIC import app, userbot
 from DAXXMUSIC.core.userbot import assistants
-from DAXXMUSIC.utils.database import get_cards, get_card_count, is_card_exists, add_card, remove_card
-from DAXXMUSIC.misc import SUDOERS
 
-LOGS_CC = -1002222638488
 
 def getcards(text: str):
     text = text.replace('\n', ' ').replace('\r', '')
@@ -39,13 +34,12 @@ def getcards(text: str):
     
     return cc, mes, ano, cvv
 
-@app.on_message(filters.command(["card"]) & SUDOERS)
+@app.on_message(filters.command('scr'))
 async def cmd_scr(client, message):
-    le = message.from_user.mention
-    msg = message.text[len('/card '):].strip()
+    msg = message.text[len('/scr '):].strip()
     splitter = msg.split(' ')
-    if 1 in assistants:
-        user = userbot.one
+    user = userbot.one
+    
     if not msg or len(splitter) < 2:
         resp = """
 𝗪𝗿𝗼𝗻𝗴 𝗙𝗼𝗿𝗺𝗮𝘁 ❌
@@ -65,13 +59,12 @@ async def cmd_scr(client, message):
     except ValueError:
         limit = 100
 
-    delete = await message.reply_text("𝗦𝗰𝗿𝗮𝗽𝗶𝗻𝗴 𝗦𝘁𝗮𝗿𝘁...", message.id)
+    delete = await message.reply_text("𝗦𝗰𝗿𝗮𝗽𝗶𝗻𝗴 𝗪𝗮𝗶𝘁...", message.id)
     channel_link = splitter[0]
     
     async def scrape_channel(channel_id, limit, title):
         amt_cc = 0
         duplicate = 0
-        card_messages = []
         async for msg in user.get_chat_history(channel_id, limit):
             all_history = msg.text or "INVALID CC NUMBER BC"
             all_cards = all_history.split('\n')
@@ -80,43 +73,42 @@ async def cmd_scr(client, message):
             if not cards:
                 continue
             
+            file_name = f"{limit}x_CC_Scraped_By_@YesikooBot.txt"
             for item in cards:
                 amt_cc += 1
                 cc, mes, ano, cvv = item
                 fullcc = f"{cc}|{mes}|{ano}|{cvv}"
-                is_exist = await is_card_exists(cc)
-                if is_exist:
-                    duplicate += 1
-                else:
-                    await add_card(cc)
-                    card_messages.append(f"{fullcc}")
+                
+                with open(file_name, 'a') as f:
+                    cclist = open(file_name).read().splitlines()
+                    if fullcc in cclist:
+                        duplicate += 1
+                    else:
+                        f.write(f"{fullcc}\n")
 
         total_cc = amt_cc
         cc_found = total_cc - duplicate
         await app.delete_messages(message.chat.id, delete.id)
-        
-        if card_messages:
-            cards_text = "\n\n".join(card_messages)
-        else:
-            cards_text = "No new cards found."
+        caption = f"""
+𝗖𝗖 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 ✅
 
-        for fullcc in card_messages:
-            card_caption = f"""
-┏━━━━━━━⍟
-┃BRAINTREE AUTH 𝟓$ ✅
-┗━━━━━━━━━━━⊛
-➩ 𝗖𝗮𝗿𝗱 :<code>{fullcc}</code>
-➩ 𝗥𝗲𝘀𝗽𝗼𝗻𝘀𝗲 : APPROVED CARD ✅
-➩ 𝗠𝗲𝘀𝘀𝗮𝗴𝗲 : CHARGED 5$
-
-[↯] 𝗣𝗿𝗼𝘅𝘆 ↳ Live ✅
-➩ 𝗖𝗵𝗲𝗰𝗸𝗲𝗱 𝗕𝘆 : {le}
+● 𝗦𝗼𝘂𝗿𝗰𝗲: {title}
+● 𝗧𝗮𝗿𝗴𝗲𝘁𝗲𝗱 𝗔𝗺𝗼𝘂𝗻𝘁: {limit}
+● 𝗖𝗖 𝗙𝗼𝘂𝗻𝗱: {cc_found}
+● 𝗗𝘂𝗽𝗹𝗶𝗰𝗮𝘁𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {duplicate}
+● 𝗦𝗰𝗿𝗮𝗽𝗲𝗱 𝗕𝘆: <a href="tg://user?id={message.from_user.id}"> {message.from_user.first_name}</a> ♻️
 """
-            await app.send_message(
-                chat_id=LOGS_CC,
-                text=card_caption,
-            )
-            await asyncio.sleep(1)
+        document = file_name
+        scr_done = await app.send_document(
+            message.chat.id,
+            document=document,
+            caption=caption,
+            reply_to_message_id=message.id
+        )
+
+        if scr_done:
+            Path(file_name).unlink(missing_ok=True)
+
 
     try:
         if "https" in channel_link:
@@ -136,10 +128,10 @@ async def cmd_scr(client, message):
 
 𝗨𝘀𝗮𝗴𝗲:
 𝗙𝗼𝗿 𝗣𝘂𝗯𝗹𝗶𝗰 𝗚𝗿𝗼𝘂𝗽 𝗦𝗰𝗿𝗮𝗽𝗽𝗶𝗻𝗴
-<code>/card username 50</code>
+<code>/scr username 50</code>
 
 𝗙𝗼𝗿 𝗣𝗿𝗶𝘃𝗮𝘁𝗲 𝗚𝗿𝗼𝘂𝗽 𝗦𝗰𝗿𝗮𝗽𝗽𝗶𝗻𝗴
-<code>/card https://t.me/+aGWRGz 50</code>
+<code>/scr https://t.me/+aGWRGz 50</code>
         """
             await message.reply_text(resp, message.id)
             await delete.delete()
