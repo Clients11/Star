@@ -34,7 +34,7 @@ def country_command_handler(client: Client, message: Message):
     except requests.exceptions.HTTPError as http_err:
         response_text = f"HTTP error occurred Enter correct Country code"
     except Exception as err:
-        response_text = f" Error @gitwizardbypass"
+        response_text = f" Error @PIYUSH_HUBS"
 
     # Send the response to the Telegram chat
     message.reply_text(response_text)
