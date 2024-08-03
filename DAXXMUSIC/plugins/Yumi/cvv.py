@@ -4,7 +4,7 @@ import telebot
 from threading import Event
 import time
 import json
-from config import BOT_TOKEN
+from config import BOT_TOKEN as TOKEN
 from config import OWNER_ID
 
 
@@ -16,7 +16,7 @@ from config import OWNER_ID
 bot = telebot.TeleBot(TOKEN)
 
 # Define the API endpoint and static parameters
-url = "https://daxxteam.com/chk/api.php"
+url = "https://daxxteam.com/gate/chk.php"
 
 # Event to control the stopping of the card check process
 stop_event = Event()
