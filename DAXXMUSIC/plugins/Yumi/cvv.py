@@ -47,12 +47,12 @@ def save_user_credits():
         json.dump(user_credits, file)
 
 # Start command handler
-@bot.message_handler(commands=['checker'])
+@app.message_handler(commands=['checker'])
 def send_welcome(message):
     bot.send_message(message.chat.id, "Welcome! Use /register to register and get 10 credits. Use the /chk command followed by card details in the format `cc|mm|yyyy|cvv`, or send a TXT file with card details. Use /stop to stop the card check process.")
 
 # /cmds command handler
-@bot.message_handler(commands=['cmds'])
+@app.message_handler(commands=['cmds'])
 def send_cmds(message):
     cmds_message = (
         "Available commands:\n"
@@ -68,7 +68,7 @@ def send_cmds(message):
     bot.reply_to(message, cmds_message)
 
 # /register command handler
-@bot.message_handler(commands=['register'])
+@app.message_handler(commands=['register'])
 def register_user(message):
     user_id = message.from_user.id
     if user_id in user_credits:
@@ -80,7 +80,7 @@ def register_user(message):
     bot.reply_to(message, "You have been registered and received 10 credits.")
 
 # /info command handler
-@bot.message_handler(commands=['info'])
+@app.message_handler(commands=['info'])
 def user_info(message):
     user_id = message.from_user.id
     if user_id not in user_credits and user_id != OWNER_ID:
@@ -103,7 +103,7 @@ def user_info(message):
     bot.reply_to(message, info_message)
 
 # /add command handler to authorize a group or user
-@bot.message_handler(commands=['add'])
+@app.message_handler(commands=['add'])
 def add_authorization(message):
     if message.from_user.id != OWNER_ID:
         bot.reply_to(message, "You are not authorized to use this command.")
@@ -134,7 +134,7 @@ def add_authorization(message):
         bot.reply_to(message, f"User {user_id} has been authorized with {credits} credits.")
 
 # /remove command handler to unauthorize a group or user
-@bot.message_handler(commands=['remove'])
+@app.message_handler(commands=['remove'])
 def remove_authorization(message):
     if message.from_user.id != OWNER_ID:
         bot.reply_to(message, "You are not authorized to use this command.")
@@ -167,7 +167,7 @@ def remove_authorization(message):
         bot.reply_to(message, "Invalid type. Use 'group' or 'userid'.")
 
 # /chk command handler
-@bot.message_handler(commands=['chk'])
+@app.message_handler(commands=['chk'])
 def check_card(message):
     user_id = message.from_user.id
     if user_id != OWNER_ID and user_id not in user_credits and message.chat.id not in authorized_groups:
@@ -221,7 +221,7 @@ def check_card(message):
         time.sleep(10)
 
 # Document handler
-@bot.message_handler(content_types=['document'])
+@app.message_handler(content_types=['document'])
 def handle_file(message):
     user_id = message.from_user.id
     if user_id not in user_credits and user_id != OWNER_ID:
@@ -282,7 +282,7 @@ def handle_file(message):
                 time.sleep(10)
 
 # /stop command handler
-@bot.message_handler(commands=['stp'])
+@app.message_handler(commands=['stp'])
 def stop_process(message):
     if message.from_user.id == OWNER_ID:
         stop_event.set()
