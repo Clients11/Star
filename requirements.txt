@@ -56,7 +56,7 @@ SpeechRecognition
 spotipy
 telegraph
 tgcrypto
-telebot
+pyTelegramBotAPI
 unidecode
 wget
 yt-dlp
