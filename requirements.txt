@@ -3,6 +3,7 @@ aiohttp
 apscheduler
 asyncio
 bard
+bing_image_downloader
 beautifulsoup4
 bs4
 cloudscraper
