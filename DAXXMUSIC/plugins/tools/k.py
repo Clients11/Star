@@ -32,9 +32,7 @@ async def khan_data(session, message, t, headers):
                     p_count += 1
                 else:
                     v_count += 1  
-                    
                 
-                      
                 if video.get('pdfs', []):
                     for pdf in video['pdfs']:
                         p_count += 1
@@ -47,10 +45,10 @@ async def khan_data(session, message, t, headers):
         await message.reply_text(str(e))
 
 @app.on_message(filters.command("khan"))
-async def khan_login(app, query, message):
+async def khan_command_handler(client: Client, message: Message):
     global v_count, p_count
     msg = await message.reply_text("**🔑 For access, please transmit your ID & Password in the correct sequence:\n\n🔒 Send like this: ID*Password**")
-    input1 = await app.listen(user_id=query.from_user.id)
+    input1 = await client.listen(user_id=message.from_user.id)
     raw_text = input1.text
     
     login_url = "https://khanglobalstudies.com/api/login-with-password"
@@ -76,9 +74,11 @@ async def khan_login(app, query, message):
                 if token:
                     await msg.edit_text("✅ Login Successful") 
                 else:
-                    print("Login failed: Token not found in response")
+                    await msg.edit_text("Login failed: Token not found in response")
+                    return
             else:
-                await msg.edit_text(f"Login failed")
+                await msg.edit_text("Login failed")
+                return
 
         if token:
             headers = {
@@ -88,7 +88,7 @@ async def khan_login(app, query, message):
                 "user-agent": "okhttp/3.9.1"
             }
         else:
-            return await msg.edit_text("failed to get token")
+            return await msg.edit_text("Failed to get token")
 
         course_url = "https://khanglobalstudies.com/api/user/v2/courses"
         async with session.get(course_url, headers=headers) as response:
@@ -99,7 +99,7 @@ async def khan_login(app, query, message):
             FFF += f"`{course['id']}`   -   **{course['title']}**\n\n"
 
         await msg.edit_text(f"{FFF}\n\n**Now send the Batch ID to Download**")
-        input3 = await app.listen(user_id=query.from_user.id)
+        input3 = await client.listen(user_id=message.from_user.id)
         await input3.delete(True)
         raw_text3 = input3.text
         for course in data:
@@ -132,3 +132,4 @@ async def khan_login(app, query, message):
         await message.reply_document(document=f"{batch_name}.txt", caption=c_txt)
         await msg.delete()
         os.remove(f"{batch_name}.txt")
+
