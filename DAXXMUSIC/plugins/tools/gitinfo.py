@@ -6,9 +6,9 @@ from DAXXMUSIC import app
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 ###
-@app.on_message(filters.command("piyushhub"))
+@app.on_message(filters.command("Starboyhub"))
 async def daxxhub(_, message):
-    text = message.text[len("/piyushhub") :]
+    text = message.text[len("/Starboyhub") :]
     papadaxx(f"{text}").save(f"daxxhub_{message.from_user.id}.png")
     await message.reply_photo(f"daxxhub_{message.from_user.id}.png")
     os.remove(f"daxxhub_{message.from_user.id}.png")
